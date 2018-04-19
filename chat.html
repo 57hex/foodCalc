@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+    <link rel="stylesheet" href="http://csshake.surge.sh/csshake-slow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"></script>
+    <script>
+      let socket = io.connect('localhost:8124')
+      socket.on('connect', () => {
+        socket.emit('addme', {name: prompt('你是誰？')})
+      }) // 調用伺服器的 addme function
+      socket.on('chat', (data) => {
+        let p = document.createElement('p')
+        p.innerHTML = `${data.sender} : ${data.message}`
+        document.getElementById('output').appendChild(p)
+      })
+      window.addEventListener('load', () => {
+        document.getElementById('sendText').addEventListener('click', () => {
+          let text = document.getElementById('data').value
+          socket.emit('sendChat', {message: `${text}`})
+        }, false)
+      }, false)
+    </script>
+    <style>
+        @keyframes spin {
+            from {
+                left: calc(+2%);
+                right: calc(+2%);
+            }
+            to {
+                left: calc(+5%);
+                right: calc(+10%);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div id="output"></div>
+    <input id="data">
+    <button id="sendText" class="btn">測試</button>
+    <div style="height: 15rem; width: 15rem; animation: spin 2s infinite; transition: .2s"></div>
+</div>
+<!--<div style="max-height: 80%; max-width: 80%;"><img style="width: 100%; height: auto;" src="https://imgur.dcard.tw/DhCsw.jpg"></img></div><p>star bust</p><-->
+</body>
+<footer>
+</footer>
+</html>
